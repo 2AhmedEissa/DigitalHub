@@ -1,0 +1,11 @@
+@import "tailwindcss";
+
+@layer components {
+  /* No special fonts imported yet as per instructions unless requested or CDN used. 
+     Using system fonts with Tailwind defaults is usually fine, but let's make it look nicer. */
+}
+
+body {
+  background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+  min-height: 100vh;
+}
