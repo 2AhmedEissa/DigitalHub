@@ -1,6 +1,7 @@
 import { useState, useMemo, useRef } from "react";
 import { products } from "../../data/products";
 import { debounce } from "../../utils/useDebounce";
+import toast from "react-hot-toast";
 import {
   Search,
   Filter,
@@ -16,7 +17,6 @@ import {
 } from "lucide-react";
 
 export default function ProductTable() {
-  // State management
   const [data, setData] = useState(products);
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
@@ -26,7 +26,6 @@ export default function ProductTable() {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
-  // Debounced search handler using your debounce logic
   const debouncedSetSearch = useRef(
     debounce((value) => {
       setDebouncedSearch(value);
@@ -40,25 +39,20 @@ export default function ProductTable() {
     setCurrentPage(1);
   };
 
-  // Get unique categories from products
   const categories = useMemo(
-    () => ["All", ...new Set(products.map((p) => p.category))],
-    []
+    () => ["All", ...new Set(data.map((p) => p.category))],
+    [data]
   );
 
-  // Filter products based on all criteria
   const filteredData = useMemo(() => {
     return data.filter((item) => {
-      // 1. Search by name
       const matchesSearch = item.name
         .toLowerCase()
         .includes(debouncedSearch.toLowerCase());
 
-      // 2. Category filter
       const matchesCategory =
         selectedCategory === "All" || item.category === selectedCategory;
 
-      // 3. Offer filter
       const matchesOffer =
         offerFilter === "All"
           ? true
@@ -66,7 +60,6 @@ export default function ProductTable() {
           ? item.offer
           : !item.offer;
 
-      // 4. Price range filter
       let matchesPrice = true;
       if (selectedPriceRange === "low") matchesPrice = item.price < 100;
       if (selectedPriceRange === "mid")
@@ -92,14 +85,67 @@ export default function ProductTable() {
 
   // Delete handler
   const handleDelete = (id) => {
-    if (confirm("Are you sure you want to delete this product?")) {
-      setData((prev) => prev.filter((p) => p.id !== id));
-    }
+    toast(
+      (t) => (
+        <div className="flex flex-col gap-3">
+          <p className="font-medium text-gray-900">
+            Are you sure you want to delete this product?
+          </p>
+          <div className="flex justify-end gap-2">
+            <button
+              onClick={() => toast.dismiss(t.id)}
+              className="px-3 py-1.5 text-xs font-semibold text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={() => {
+                setData((prev) => prev.filter((p) => p.id !== id));
+                toast.dismiss(t.id);
+                toast.success("Product deleted successfully!", {
+                  icon: "🗑️",
+                  style: {
+                    borderRadius: "12px",
+                    background: "#333",
+                    color: "#fff",
+                  },
+                });
+              }}
+              className="px-3 py-1.5 text-xs font-semibold text-white bg-rose-500 hover:bg-rose-600 rounded-lg transition-colors shadow-sm"
+            >
+              Delete
+            </button>
+          </div>
+        </div>
+      ),
+      {
+        duration: 5000,
+        position: "top-center",
+        style: {
+          padding: "16px",
+          color: "#1e293b",
+          background: "#fff",
+          borderRadius: "20px",
+          boxShadow:
+            "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
+          border: "1px border-gray-100",
+          minWidth: "300px",
+        },
+      }
+    );
   };
 
-  // Edit handler (placeholder)
+  // Edit handler
   const handleEdit = (id) => {
-    alert(`Edit product with ID: ${id}`);
+    toast(`Opening edit for product #${id}`, {
+      icon: "🏽",
+      style: {
+        borderRadius: "12px",
+        background: "#fff",
+        color: "#333",
+        border: "1px solid #e2e8f0",
+      },
+    });
   };
 
   return (

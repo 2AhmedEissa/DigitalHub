@@ -71,13 +71,13 @@ export default function Navbar() {
                   href="#"
                   className="rounded-full px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-indigo-600 transition-colors"
                 >
-                  Products
+                  About
                 </a>
                 <a
                   href="#"
                   className="rounded-full px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-indigo-600 transition-colors"
                 >
-                  Analytics
+                  Services
                 </a>
               </div>
             </div>
