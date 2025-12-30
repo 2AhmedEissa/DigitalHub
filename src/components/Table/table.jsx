@@ -14,6 +14,7 @@ import {
   Package,
   CheckCircle2,
   XCircle,
+  RotateCcw,
 } from "lucide-react";
 
 export default function ProductTable() {
@@ -37,6 +38,23 @@ export default function ProductTable() {
     setSearch(value);
     debouncedSetSearch(value);
     setCurrentPage(1);
+  };
+
+  const handleClearFilters = () => {
+    setSearch("");
+    setDebouncedSearch("");
+    setSelectedCategory("All");
+    setSelectedPriceRange("All");
+    setOfferFilter("All");
+    setCurrentPage(1);
+    toast.success("Filters cleared", {
+      duration: 2000,
+      style: {
+        borderRadius: "10px",
+        background: "#333",
+        color: "#fff",
+      },
+    });
   };
 
   const categories = useMemo(
@@ -253,8 +271,20 @@ export default function ProductTable() {
             </div>
           </div>
 
-          {/* Results Count */}
-          <div className="flex items-center justify-end px-2">
+          {/* Results Count & Clear */}
+          <div className="flex items-center justify-end gap-3 px-2">
+            {(search ||
+              selectedCategory !== "All" ||
+              selectedPriceRange !== "All" ||
+              offerFilter !== "All") && (
+              <button
+                onClick={handleClearFilters}
+                className="flex items-center gap-2 px-3 py-1.5 text-xs font-semibold text-rose-600 bg-rose-50 hover:bg-rose-100 rounded-full transition-all border border-rose-100"
+              >
+                <RotateCcw className="w-3.5 h-3.5" />
+                Clear Filters
+              </button>
+            )}
             <span className="text-sm font-medium text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full">
               {filteredData.length} Results
             </span>
@@ -262,9 +292,9 @@ export default function ProductTable() {
         </div>
       </div>
 
-      {/* Table Card */}
       <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl shadow-indigo-100 border border-white/40 overflow-hidden">
-        <div className="overflow-x-auto">
+        {/* Desktop Table View */}
+        <div className="hidden md:block overflow-x-auto">
           <table className="w-full whitespace-nowrap">
             <thead>
               <tr className="bg-gray-50/50 border-b border-gray-100 text-left">
@@ -283,9 +313,6 @@ export default function ProductTable() {
                 <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">
                   Suppliers
                 </th>
-                {/* <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">
-                  Stock
-                </th> */}
                 <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider text-right">
                   Actions
                 </th>
@@ -298,11 +325,10 @@ export default function ProductTable() {
                     key={product.id}
                     className="hover:bg-indigo-50/30 transition-colors duration-150 group"
                   >
-                    {/* Product Name */}
                     <td className="px-6 py-4">
                       <div className="flex items-center">
                         <div className="h-10 w-10 flex-shrink-0 bg-gradient-to-br from-indigo-100 to-purple-100 rounded-lg flex items-center justify-center text-indigo-600 font-bold text-lg shadow-sm">
-                          {product.name.charAt(0)}
+                          {product.name[0]}
                         </div>
                         <div className="ml-4">
                           <div className="text-sm font-bold text-gray-900 group-hover:text-indigo-600 transition-colors">
@@ -314,22 +340,16 @@ export default function ProductTable() {
                         </div>
                       </div>
                     </td>
-
-                    {/* Category */}
                     <td className="px-6 py-4">
                       <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-purple-100 text-purple-700 border border-purple-200">
                         {product.category}
                       </span>
                     </td>
-
-                    {/* Price */}
                     <td className="px-6 py-4">
                       <div className="text-sm font-bold text-gray-900">
                         ${product.price}
                       </div>
                     </td>
-
-                    {/* Offer */}
                     <td className="px-6 py-4">
                       {product.offer ? (
                         <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold inline-flex items-center gap-1 bg-emerald-100 text-emerald-700 border border-emerald-200">
@@ -341,8 +361,6 @@ export default function ProductTable() {
                         </span>
                       )}
                     </td>
-
-                    {/* Suppliers */}
                     <td className="px-6 py-4">
                       <div className="flex flex-wrap gap-1 max-w-[200px]">
                         {product.suppliers.map((supplier, idx) => (
@@ -355,28 +373,17 @@ export default function ProductTable() {
                         ))}
                       </div>
                     </td>
-
-                    {/* Stock 
-                    <td className="px-6 py-4">
-                      <div className="text-sm font-semibold text-gray-700">
-                        {product.stock} units
-                      </div>
-                    </td>*/}
-
-                    {/* Actions */}
                     <td className="px-6 py-4 text-right">
                       <div className="flex items-center justify-end gap-2">
                         <button
                           onClick={() => handleEdit(product.id)}
                           className="p-2 bg-white border border-gray-200 rounded-lg hover:border-indigo-300 hover:text-indigo-600 hover:bg-indigo-50 transition-all shadow-sm"
-                          title="Edit"
                         >
                           <Edit className="w-4 h-4" />
                         </button>
                         <button
                           onClick={() => handleDelete(product.id)}
                           className="p-2 bg-white border border-gray-200 rounded-lg hover:border-rose-300 hover:text-rose-600 hover:bg-rose-50 transition-all shadow-sm"
-                          title="Delete"
                         >
                           <Trash2 className="w-4 h-4" />
                         </button>
@@ -387,7 +394,7 @@ export default function ProductTable() {
               ) : (
                 <tr>
                   <td
-                    colSpan="7"
+                    colSpan="6"
                     className="px-6 py-12 text-center text-gray-500"
                   >
                     <div className="flex flex-col items-center justify-center">
@@ -399,6 +406,99 @@ export default function ProductTable() {
               )}
             </tbody>
           </table>
+        </div>
+
+        {/* Mobile Card View */}
+        <div className="md:hidden divide-y divide-gray-100">
+          {paginatedData.length > 0 ? (
+            paginatedData.map((product) => (
+              <div key={product.id} className="p-4 space-y-4">
+                <div className="flex items-start justify-between">
+                  <div className="flex items-center">
+                    <div className="h-10 w-10 bg-gradient-to-br from-indigo-100 to-purple-100 rounded-lg flex items-center justify-center text-indigo-600 font-bold text-lg">
+                      {product.name[0]}
+                    </div>
+                    <div className="ml-3">
+                      <div className="text-sm font-bold text-gray-900">
+                        {product.name}
+                      </div>
+                      <div className="text-xs text-gray-400">
+                        ID: #{product.id.toString().padStart(4, "0")}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => handleEdit(product.id)}
+                      className="p-2 bg-white border border-gray-200 rounded-lg text-gray-400 hover:text-indigo-600"
+                    >
+                      <Edit className="w-4 h-4" />
+                    </button>
+                    <button
+                      onClick={() => handleDelete(product.id)}
+                      className="p-2 bg-white border border-gray-200 rounded-lg text-gray-400 hover:text-rose-600"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <div className="text-[10px] uppercase font-bold text-gray-400 tracking-wider mb-1">
+                      Category
+                    </div>
+                    <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-purple-100 text-purple-700 border border-purple-200">
+                      {product.category}
+                    </span>
+                  </div>
+                  <div>
+                    <div className="text-[10px] uppercase font-bold text-gray-400 tracking-wider mb-1">
+                      Price
+                    </div>
+                    <div className="text-sm font-bold text-gray-900">
+                      ${product.price}
+                    </div>
+                  </div>
+                  <div>
+                    <div className="text-[10px] uppercase font-bold text-gray-400 tracking-wider mb-1">
+                      Offer
+                    </div>
+                    {product.offer ? (
+                      <span className="text-xs font-semibold flex items-center gap-1 text-emerald-600">
+                        <CheckCircle2 className="w-3 h-3" /> Yes
+                      </span>
+                    ) : (
+                      <span className="text-xs font-semibold flex items-center gap-1 text-gray-500">
+                        <XCircle className="w-3 h-3" /> No
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                <div>
+                  <div className="text-[10px] uppercase font-bold text-gray-400 tracking-wider mb-1">
+                    Suppliers
+                  </div>
+                  <div className="flex flex-wrap gap-1">
+                    {product.suppliers.map((supplier, idx) => (
+                      <span
+                        key={idx}
+                        className="px-2 py-0.5 bg-gray-50 border border-gray-100 rounded text-[10px] text-gray-500"
+                      >
+                        {supplier}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            ))
+          ) : (
+            <div className="p-12 text-center text-gray-500">
+              <Package className="w-12 h-12 text-gray-300 mx-auto mb-2" />
+              <p>No products found.</p>
+            </div>
+          )}
         </div>
 
         {/* Pagination Footer */}
