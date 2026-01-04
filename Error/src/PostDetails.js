@@ -22,8 +22,8 @@ export default function PostDetails({ id }) {
 
   return (
     <div style={{ marginTop: 20 }}>
-      <h3>{post.title.toUpperCase()}</h3>
-      <p>{post.body}</p>
+      <h3>{post?.title?.toUpperCase()}</h3>
+      <p>{post?.body}</p>
     </div>
   );
 }
