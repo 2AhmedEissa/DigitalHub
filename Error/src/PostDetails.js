@@ -1,14 +1,15 @@
 import { useEffect, useState } from "react";
+import axios from "axios";
 
 export default function PostDetails({ id }) {
   const [post, setPost] = useState(null);
 
-  
   useEffect(() => {
-    fetch("https://jsonplaceholder.typicode.com/posts/" + id)
-      .then((res) => res.json())
-      .then((data) => {
-        setPost(data);
+    axios
+      .get("https://jsonplaceholder.typicode.com/posts/" + id)
+      .then((res) => {
+        setPost(res.data);
+        console.log(res.data);
       });
   }, [id]);
 
@@ -22,8 +23,8 @@ export default function PostDetails({ id }) {
 
   return (
     <div style={{ marginTop: 20 }}>
-      <h3>{post?.title?.toUpperCase()}</h3>
-      <p>{post?.body}</p>
+      <h3>{post.title.toUpperCase()}</h3>
+      <p>{post.body}</p>
     </div>
   );
 }

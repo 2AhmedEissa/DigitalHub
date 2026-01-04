@@ -1,15 +1,16 @@
 import { useEffect, useState } from "react";
 import PostDetails from "./PostDetails";
 import PostErrorBoundary from "./PostErrorBoundary";
+import axios from "axios";
 
 function App() {
   const [posts, setPosts] = useState([]);
   const [selectedId, setSelectedId] = useState(null);
 
   useEffect(() => {
-    fetch("https://jsonplaceholder.typicode.com/posts")
-      .then((res) => res.json())
-      .then((data) => setPosts(data));
+    axios.get("https://jsonplaceholder.typicode.com/posts").then((res) => {
+      setPosts(res.data);
+    });
   }, []);
 
   return (
