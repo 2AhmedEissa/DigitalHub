@@ -1,18 +1,36 @@
 import Navbar from "./components/Navbar/navbar";
-import Table from "./components/Table/table";
+import Inventory from "./Pages/Inventory";
+import Users from "./Pages/Users";
 import { Toaster } from "react-hot-toast";
-
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Footer from "./components/Footer/footer";
 
 export default function App() {
   return (
-    <div className="flex flex-col min-h-screen">
-      <Toaster position="top-center" reverseOrder={false} />
-      <Navbar />
-      <main className="flex-grow p-4 md:p-8">
-        <Table />
-      </main>
-      <Footer />
-    </div>
+    <Router>
+      <div className="flex flex-col min-h-screen bg-gray-50/50">
+        <Toaster 
+          position="top-center" 
+          reverseOrder={false} 
+          toastOptions={{
+            style: {
+              borderRadius: '16px',
+              background: '#333',
+              color: '#fff',
+            },
+          }}
+        />
+        <Navbar />
+        <main className="flex-grow p-4 md:p-8">
+          <Routes>
+            <Route path="/" element={<Inventory />} />
+            <Route path="/users" element={<Users />} />
+            {/* Fallback route */}
+            <Route path="*" element={<Inventory />} />
+          </Routes>
+        </main>
+        <Footer />
+      </div>
+    </Router>
   );
 }

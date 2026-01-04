@@ -1,8 +1,15 @@
-import { useState } from "react";
-
+import { NavLink } from "react-router-dom";
+import { useState
+  
+ } from "react";
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+
+  const navLinks = [
+    { name: "Inventory", path: "/" },
+    { name: "Users", path: "/users" },
+  ];
 
   return (
     <nav className="sticky top-0 z-50 bg-white/70 backdrop-blur-lg border-b border-indigo-100">
@@ -60,25 +67,21 @@ export default function Navbar() {
             </div>
             <div className="hidden sm:ml-6 sm:block">
               <div className="flex space-x-4">
-                <a
-                  href="#"
-                  className="rounded-full bg-indigo-50 px-3 py-2 text-sm font-medium text-indigo-700"
-                  aria-current="page"
-                >
-                  Home
-                </a>
-                <a
-                  href="#"
-                  className="rounded-full px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-indigo-600 transition-colors"
-                >
-                  About
-                </a>
-                <a
-                  href="#"
-                  className="rounded-full px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-indigo-600 transition-colors"
-                >
-                  Services
-                </a>
+                {navLinks.map((link) => (
+                  <NavLink
+                    key={link.path}
+                    to={link.path}
+                    className={({ isActive }) =>
+                      `rounded-full px-4 py-2 text-sm font-medium transition-all duration-200 ${
+                        isActive
+                          ? "bg-indigo-50 text-indigo-700 shadow-sm"
+                          : "text-gray-600 hover:bg-gray-50 hover:text-indigo-600"
+                      }`
+                    }
+                  >
+                    {link.name}
+                  </NavLink>
+                ))}
               </div>
             </div>
           </div>
@@ -149,25 +152,22 @@ export default function Navbar() {
       {isOpen && (
         <div className="sm:hidden" id="mobile-menu">
           <div className="space-y-1 px-2 pb-3 pt-2">
-            <a
-              href="#"
-              className="block rounded-md bg-gray-900 px-3 py-2 text-base font-medium text-white"
-              aria-current="page"
-            >
-              Home
-            </a>
-            <a
-              href="#"
-              className="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
-            >
-              About
-            </a>
-            <a
-              href="#"
-              className="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
-            >
-              Services
-            </a>
+            {navLinks.map((link) => (
+              <NavLink
+                key={link.path}
+                to={link.path}
+                onClick={() => setIsOpen(false)}
+                className={({ isActive }) =>
+                  `block rounded-md px-3 py-2 text-base font-medium ${
+                    isActive
+                      ? "bg-indigo-600 text-white"
+                      : "text-gray-600 hover:bg-indigo-50 hover:text-indigo-600"
+                  }`
+                }
+              >
+                {link.name}
+              </NavLink>
+            ))}
           </div>
         </div>
       )}

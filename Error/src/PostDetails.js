@@ -1,25 +1,16 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import client from "./AxiosInterceptor";
 
 export default function PostDetails({ id }) {
   const [post, setPost] = useState(null);
 
   useEffect(() => {
-    axios
-      .get("https://jsonplaceholder.typicode.com/posts/" + id)
-      .then((res) => {
-        setPost(res.data);
-        console.log(res.data);
-      });
+    client.get(`/posts/${id}`).then((res) => {
+      setPost(res.data);
+    });
   }, [id]);
 
-  if (!post) {
-    return (
-      <>
-        <h3>loading...</h3>
-      </>
-    );
-  }
+  if (!post) return <h3>loading...</h3>;
 
   return (
     <div style={{ marginTop: 20 }}>

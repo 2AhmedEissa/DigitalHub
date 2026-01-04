@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 import PostDetails from "./PostDetails";
 import PostErrorBoundary from "./PostErrorBoundary";
-import axios from "axios";
+import client from "./AxiosInterceptor";
 
 function App() {
   const [posts, setPosts] = useState([]);
   const [selectedId, setSelectedId] = useState(null);
 
   useEffect(() => {
-    axios.get("https://jsonplaceholder.typicode.com/posts").then((res) => {
+    client.get("/posts").then((res) => {
       setPosts(res.data);
     });
   }, []);
@@ -16,6 +16,7 @@ function App() {
   return (
     <div style={{ padding: 20 }}>
       <h2>Posts List</h2>
+
       {posts.map((p) => (
         <p
           key={p.id}
@@ -30,10 +31,7 @@ function App() {
 
       {selectedId && (
         <PostErrorBoundary>
-          <PostDetails
-            id={selectedId}
-            fallback={<p>Failed to load post details!</p>}
-          />
+          <PostDetails id={selectedId} />
         </PostErrorBoundary>
       )}
     </div>

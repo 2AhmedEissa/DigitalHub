@@ -1,6 +1,6 @@
 import { useState, useMemo, useRef } from "react";
-import { products } from "../../data/products";
-import { debounce } from "../../utils/useDebounce";
+import { products } from "../data/products";
+import { debounce } from "../utils/useDebounce";
 import toast from "react-hot-toast";
 import {
   Search,
