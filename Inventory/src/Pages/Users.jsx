@@ -4,17 +4,11 @@ import UserList from "../components/Users/UserList";
 import UserDetails from "../components/Users/UserDetails";
 
 export default function UsersPage() {
-  const {
-    users,
-    search,
-    setSearch,
-    loading,
-    selectedUser,
-    setSelectedUser,
-  } = useUsers();
+  const { users, search, setSearch, loading, selectedUser, setSelectedUser } =
+    useUsers();
 
   return (
-    <div style={{ padding: 20 }}>
+    <div>
       <h2>Users</h2>
 
       <UserSearch value={search} onChange={setSearch} />
