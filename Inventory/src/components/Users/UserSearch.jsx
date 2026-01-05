@@ -1,4 +1,4 @@
-import React, { memo, useState, useEffect, useRef } from "react";
+import { memo, useState, useEffect, useRef } from "react";
 import { Search } from "lucide-react";
 import { debounce } from "../../utils/useDebounce";
 
@@ -39,6 +39,5 @@ const UserSearch = memo(({ value: externalValue, onChange }) => {
   );
 });
 
-UserSearch.displayName = "UserSearch";
 
 export default UserSearch;
