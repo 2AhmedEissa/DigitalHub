@@ -17,8 +17,8 @@ const Users = () => {
   } = useUsers();
 
   return (
-    <div className="w-full max-w-[1400px] mx-auto animate-in fade-in duration-700">
-      <div className="bg-white/70 backdrop-blur-xl border border-white/20 rounded-3xl p-6 mb-8 shadow-xl shadow-indigo-500/5">
+    <main className="w-full max-w-350 mx-auto animate-in fade-in duration-700">
+      <header className="bg-white/70 backdrop-blur-xl border border-white/20 rounded-3xl p-6 mb-8 shadow-xl shadow-indigo-500/5">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
           <div>
             <div className="flex items-center gap-2 mb-1">
@@ -33,11 +33,11 @@ const Users = () => {
 
           <UserSearch value={search} onChange={handleSearchChange} />
         </div>
-      </div>
+      </header>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 pb-12">
         {/* List */}
-        <div className="lg:col-span-2 space-y-4">
+        <section className="lg:col-span-2 space-y-4">
           <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl shadow-indigo-100 border border-white/40 p-6 overflow-hidden">
             <div className="flex items-center justify-between mb-8">
               <div className="flex items-center gap-2">
@@ -71,9 +71,9 @@ const Users = () => {
               />
             )}
           </div>
-        </div>
+        </section>
 
-        <div className="hidden lg:block lg:col-span-1">
+        <aside className="hidden lg:block lg:col-span-1">
           <div className="sticky top-24">
             {selectedUser ? (
               <UserDetails user={selectedUser} onClose={handleClearSelection} />
@@ -93,9 +93,9 @@ const Users = () => {
               </div>
             )}
           </div>
-        </div>
+        </aside>
       </div>
-    </div>
+    </main>
   );
 };
 

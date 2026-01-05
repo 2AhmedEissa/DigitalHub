@@ -1,10 +1,10 @@
-import React, { memo } from "react";
+import { memo } from "react";
 import { User, ChevronRight, Mail } from "lucide-react";
 import UserDetails from "./UserDetails";
 
 const UserItem = memo(({ user, onSelect, isSelected, onCloseDetails }) => {
   return (
-    <div className="space-y-3">
+    <li className="space-y-3 list-none">
       <button
         onClick={() => onSelect(user)}
         className={`flex items-center justify-between w-full p-4 rounded-2xl transition-all duration-300 border ${
@@ -70,7 +70,7 @@ const UserItem = memo(({ user, onSelect, isSelected, onCloseDetails }) => {
           <UserDetails user={user} onClose={onCloseDetails} />
         </div>
       )}
-    </div>
+    </li>
   );
 });
 
@@ -93,7 +93,7 @@ export const UserList = memo(
     const selectedId = selectedUser?.id;
 
     return (
-      <div className="grid gap-4">
+      <ul className="grid gap-4 p-0">
         {users.map((user) => (
           <UserItem
             key={user.id}
@@ -103,7 +103,7 @@ export const UserList = memo(
             onCloseDetails={onCloseDetails}
           />
         ))}
-      </div>
+      </ul>
     );
   }
 );

@@ -167,9 +167,9 @@ export default function ProductTable() {
   };
 
   return (
-    <div className="w-full max-w-[1400px] mx-auto animate-in fade-in duration-500">
+    <main className="w-full max-w-[1400px] mx-auto animate-in fade-in duration-500">
       {/* Search & Filter Header */}
-      <div className="bg-white/70 backdrop-blur-xl border border-white/20 rounded-3xl p-6 mb-8 shadow-xl shadow-indigo-500/5">
+      <header className="bg-white/70 backdrop-blur-xl border border-white/20 rounded-3xl p-6 mb-8 shadow-xl shadow-indigo-500/5">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-6">
           <div>
             <h1 className="text-3xl font-bold text-gray-900 tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-violet-600">
@@ -187,6 +187,7 @@ export default function ProductTable() {
             </div>
             <input
               type="text"
+              aria-label="Search products"
               className="block w-full pl-10 pr-4 py-3 bg-white border border-gray-200 rounded-xl leading-5 
                          placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 
                          transition-all duration-200 shadow-sm"
@@ -198,13 +199,17 @@ export default function ProductTable() {
         </div>
 
         {/* Filters Bar */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+        <section
+          className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4"
+          aria-label="Product filters"
+        >
           {/* Category Filter */}
           <div className="relative">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
               <Tags className="h-4 w-4 text-gray-400" />
             </div>
             <select
+              aria-label="Filter by category"
               className="block w-full pl-10 pr-10 py-2.5 bg-gray-50/50 border border-gray-200 rounded-xl text-sm 
                          focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 appearance-none transition-all cursor-pointer hover:bg-white"
               value={selectedCategory}
@@ -230,6 +235,7 @@ export default function ProductTable() {
               <DollarSign className="h-4 w-4 text-gray-400" />
             </div>
             <select
+              aria-label="Filter by price range"
               className="block w-full pl-10 pr-10 py-2.5 bg-gray-50/50 border border-gray-200 rounded-xl text-sm 
                          focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 appearance-none transition-all cursor-pointer hover:bg-white"
               value={selectedPriceRange}
@@ -254,6 +260,7 @@ export default function ProductTable() {
               <Package className="h-4 w-4 text-gray-400" />
             </div>
             <select
+              aria-label="Filter by offer status"
               className="block w-full pl-10 pr-10 py-2.5 bg-gray-50/50 border border-gray-200 rounded-xl text-sm 
                          focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 appearance-none transition-all cursor-pointer hover:bg-white"
               value={offerFilter}
@@ -289,12 +296,15 @@ export default function ProductTable() {
               {filteredData.length} Results
             </span>
           </div>
-        </div>
-      </div>
+        </section>
+      </header>
 
       <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl shadow-indigo-100 border border-white/40 overflow-hidden">
         {/* Desktop Table View */}
-        <div className="hidden md:block overflow-x-auto">
+        <section
+          className="hidden md:block overflow-x-auto"
+          aria-label="Product list table"
+        >
           <table className="w-full whitespace-nowrap">
             <thead>
               <tr className="bg-gray-50/50 border-b border-gray-100 text-left">
@@ -377,12 +387,14 @@ export default function ProductTable() {
                       <div className="flex items-center justify-end gap-2">
                         <button
                           onClick={() => handleEdit(product.id)}
+                          aria-label={`Edit ${product.name}`}
                           className="p-2 bg-white border border-gray-200 rounded-lg hover:border-indigo-300 hover:text-indigo-600 hover:bg-indigo-50 transition-all shadow-sm"
                         >
                           <Edit className="w-4 h-4" />
                         </button>
                         <button
                           onClick={() => handleDelete(product.id)}
+                          aria-label={`Delete ${product.name}`}
                           className="p-2 bg-white border border-gray-200 rounded-lg hover:border-rose-300 hover:text-rose-600 hover:bg-rose-50 transition-all shadow-sm"
                         >
                           <Trash2 className="w-4 h-4" />
@@ -406,13 +418,16 @@ export default function ProductTable() {
               )}
             </tbody>
           </table>
-        </div>
+        </section>
 
         {/* Mobile Card View */}
-        <div className="md:hidden divide-y divide-gray-100">
+        <section
+          className="md:hidden divide-y divide-gray-100"
+          aria-label="Product list cards"
+        >
           {paginatedData.length > 0 ? (
             paginatedData.map((product) => (
-              <div key={product.id} className="p-4 space-y-4">
+              <article key={product.id} className="p-4 space-y-4">
                 <div className="flex items-start justify-between">
                   <div className="flex items-center">
                     <div className="h-10 w-10 bg-gradient-to-br from-indigo-100 to-purple-100 rounded-lg flex items-center justify-center text-indigo-600 font-bold text-lg">
@@ -430,12 +445,14 @@ export default function ProductTable() {
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => handleEdit(product.id)}
+                      aria-label={`Edit ${product.name}`}
                       className="p-2 bg-white border border-gray-200 rounded-lg text-gray-400 hover:text-indigo-600"
                     >
                       <Edit className="w-4 h-4" />
                     </button>
                     <button
                       onClick={() => handleDelete(product.id)}
+                      aria-label={`Delete ${product.name}`}
                       className="p-2 bg-white border border-gray-200 rounded-lg text-gray-400 hover:text-rose-600"
                     >
                       <Trash2 className="w-4 h-4" />
@@ -491,7 +508,7 @@ export default function ProductTable() {
                     ))}
                   </div>
                 </div>
-              </div>
+              </article>
             ))
           ) : (
             <div className="p-12 text-center text-gray-500">
@@ -499,19 +516,20 @@ export default function ProductTable() {
               <p>No products found.</p>
             </div>
           )}
-        </div>
+        </section>
 
         {/* Pagination Footer */}
-        <div className="bg-gray-50/50 px-6 py-4 border-t border-gray-100 flex items-center justify-between">
+        <footer className="bg-gray-50/50 px-6 py-4 border-t border-gray-100 flex items-center justify-between">
           <div className="text-sm text-gray-500">
             Page{" "}
             <span className="font-semibold text-indigo-600">{currentPage}</span>{" "}
             of <span className="font-semibold">{totalPages || 1}</span>
           </div>
-          <div className="flex gap-2">
+          <nav className="flex gap-2" aria-label="Pagination">
             <button
               onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
               disabled={currentPage === 1}
+              aria-label="Previous page"
               className="p-2 rounded-lg border border-gray-200 bg-white text-gray-600 enabled:hover:bg-gray-50 enabled:active:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
             >
               <ChevronLeft className="w-4 h-4" />
@@ -519,13 +537,14 @@ export default function ProductTable() {
             <button
               onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
               disabled={currentPage === totalPages || totalPages === 0}
+              aria-label="Next page"
               className="p-2 rounded-lg border border-gray-200 bg-white text-gray-600 enabled:hover:bg-gray-50 enabled:active:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
             >
               <ChevronRight className="w-4 h-4" />
             </button>
-          </div>
-        </div>
+          </nav>
+        </footer>
       </div>
-    </div>
+    </main>
   );
 }

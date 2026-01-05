@@ -1,13 +1,13 @@
-import React, { memo } from "react";
+import { memo } from "react";
 import { Mail, Phone, Globe, X, User } from "lucide-react";
 
 const UserDetails = memo(({ user, onClose }) => {
   if (!user) return null;
 
   return (
-    <div className="bg-white rounded-3xl border border-gray-100 shadow-xl overflow-hidden animate-in slide-in-from-bottom-2 duration-300">
-      <div className="flex items-center justify-between p-6 border-b border-gray-50">
-        <div className="flex items-center gap-3">
+    <article className="bg-white rounded-3xl border border-gray-100 shadow-xl overflow-hidden animate-in slide-in-from-bottom-2 duration-300">
+      <header className="flex items-center justify-end lg:justify-between  lg:p-6  lg:border-b border-gray-50">
+        <div className="hidden lg:flex items-center gap-3">
           <div className="h-10 w-10 bg-indigo-50 rounded-xl flex items-center justify-center text-indigo-600">
             <User className="h-5 w-5" />
           </div>
@@ -27,18 +27,18 @@ const UserDetails = memo(({ user, onClose }) => {
             <X className="h-5 w-5" />
           </button>
         )}
-      </div>
+      </header>
 
       {/* Info */}
-      <div className="p-6 space-y-5">
+      <section className="p-4 lg:p-6 space-y-5">
         <div className="grid gap-4">
           <InfoRow icon={<Mail />} label="Email" value={user.email} />
           <InfoRow icon={<Phone />} label="Phone" value={user.phone} />
           <InfoRow icon={<Globe />} label="Website" value={user.website} />
           <InfoRow icon={<User />} label="Username" value={user.username} />
         </div>
-      </div>
-    </div>
+      </section>
+    </article>
   );
 });
 
