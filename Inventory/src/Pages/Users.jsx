@@ -2,10 +2,11 @@ import { useUsers } from "../hooks/useUsers";
 import UserSearch from "../components/Users/UserSearch";
 import { UserList } from "../components/Users/UserList";
 import UserDetails from "../components/Users/UserDetails";
-import { Skeleton } from "../components/Shared/skeleton";
-import { Users as UsersIcon, AlertCircle, Sparkles} from "lucide-react";
+// import { Skeleton } from "../components/Shared/skeleton";
+import { Users as UsersIcon, AlertCircle, Sparkles } from "lucide-react";
 import AddButton from "../components/Shared/AddButton";
 import UserModal from "../components/Users/UserModal";
+import Skeleton from "../components/Shared/skeleton";
 
 const Users = () => {
   const {

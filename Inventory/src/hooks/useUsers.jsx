@@ -69,7 +69,7 @@ export const useUsers = () => {
           prev.map((u) => (u.id === editingUser.id ? { ...u, ...userData } : u))
         );
       } else {
-        setUsers((prev) => [...prev, { id: Date.now(), ...userData }]);
+        setUsers((prev) => [{ id: Date.now(), ...userData }, ...prev]);
       }
       setIsModalOpen(false);
       setEditingUser(null);
