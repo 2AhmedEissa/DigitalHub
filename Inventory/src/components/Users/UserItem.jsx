@@ -1,10 +1,13 @@
-import { memo } from "react";
+import { memo, useState } from "react";
 import { Mail, User, ChevronRight, Edit, Trash2 } from "lucide-react";
 import UserDetails from "./UserDetails";
 import { ActionButton } from "../Shared/Action";
+import { ConfirmPopover } from "../Shared/ConfirmPopover";
 
 export const UserItem = memo(
   ({ user, onSelect, isSelected, onCloseDetails, onEdit, onDelete }) => {
+    const [anchorEl, setAnchorEl] = useState(null);
+
     return (
       <li className="space-y-3 list-none">
         <div
@@ -67,8 +70,19 @@ export const UserItem = memo(
               <ActionButton
                 icon={Trash2}
                 label="Delete User"
-                onClick={() => onDelete(user)}
+                onClick={(e) => setAnchorEl(e.currentTarget)}
                 variant="danger"
+              />
+              <ConfirmPopover
+                anchorEl={anchorEl}
+                onClose={() => setAnchorEl(null)}
+                onConfirm={() => {
+                  onDelete(user);
+                  setAnchorEl(null);
+                }}
+                title={`${user.name}`}
+                description="This action cannot be undone. Are you sure?"
+                confirmLabel="Delete"
               />
             </div>
             <ChevronRight

@@ -1,7 +1,10 @@
-import { memo } from "react";
+import { memo, useState } from "react";
 import { Mail, Phone, Globe, X, User, Edit, Trash2 } from "lucide-react";
+import { ConfirmPopover } from "../Shared/ConfirmPopover";
 
 const UserDetails = memo(({ user, onClose, onEdit, onDelete }) => {
+  const [anchorEl, setAnchorEl] = useState(null);
+
   if (!user) return null;
 
   return (
@@ -49,13 +52,26 @@ const UserDetails = memo(({ user, onClose, onEdit, onDelete }) => {
               </button>
             )}
             {onDelete && (
-              <button
-                onClick={() => onDelete(user)}
-                className="flex-1 flex items-center justify-center gap-2 p-2.5 rounded-xl bg-rose-50 text-rose-600 font-semibold text-sm hover:bg-rose-100 transition-colors"
-              >
-                <Trash2 className="h-4 w-4" />
-                Delete
-              </button>
+              <div className="relative flex-1">
+                <button
+                  onClick={(e) => setAnchorEl(e.currentTarget)}
+                  className="w-full flex items-center justify-center gap-2 p-2.5 rounded-xl bg-rose-50 text-rose-600 font-semibold text-sm hover:bg-rose-100 transition-colors"
+                >
+                  <Trash2 className="h-4 w-4" />
+                  Delete
+                </button>
+                <ConfirmPopover
+                  anchorEl={anchorEl}
+                  onClose={() => setAnchorEl(null)}
+                  onConfirm={() => {
+                    onDelete(user);
+                    setAnchorEl(null);
+                  }}
+                  title="Delete User?"
+                  description="This action cannot be undone."
+                  confirmLabel="Delete"
+                />
+              </div>
             )}
           </div>
         )}

@@ -78,52 +78,15 @@ export const useUsers = () => {
   );
 
   const handleDeleteUser = useCallback((user) => {
-    toast(
-      (t) => (
-        <div className="flex flex-col gap-5">
-          <p className="text-sm font-medium text-gray-900">
-            Delete <span className="font-bold">{user.name}</span>?
-          </p>
-          <div className="flex gap-8">
-            <button
-              onClick={() => {
-                setUsers((prev) => prev.filter((u) => u.id !== user.id));
-                toast.dismiss(t.id);
-                toast.success("User deleted successfully", {
-                  icon: "🗑️",
-                  style: {
-                    borderRadius: "10px",
-                    background: "#333",
-                    color: "#fff",
-                  },
-                });
-              }}
-              className="cursor-pointer  px-3 py-1.5 bg-rose-500 text-white text-xs font-semibold rounded-md hover:bg-rose-600 transition-colors"
-            >
-              Delete
-            </button>
-            <button
-              onClick={() => toast.dismiss(t.id)}
-              className="cursor-pointer px-3 py-1.5 bg-gray-100 text-gray-700 text-xs font-semibold rounded-md hover:bg-gray-200 transition-colors"
-            >
-              Cancel
-            </button>
-          </div>
-        </div>
-      ),
-      {
-        duration: 5000,
-        position: "top-center",
-        style: {
-          background: "#fff",
-          color: "#333",
-          padding: "16px",
-          borderRadius: "16px",
-          boxShadow:
-            "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
-        },
-      }
-    );
+    setUsers((prev) => prev.filter((u) => u.id !== user.id));
+    toast.success("User deleted successfully", {
+      icon: "🗑️",
+      style: {
+        borderRadius: "10px",
+        background: "red",
+        color: "#fff",
+      },
+    });
   }, []);
 
   return {

@@ -1,8 +1,13 @@
-export const ActionButton = ({ icon: Icon, label, onClick, variant = "primary" }) => (
+export const ActionButton = ({
+  icon: Icon,
+  label,
+  onClick,
+  variant = "primary",
+}) => (
   <button
     onClick={(e) => {
-      e.stopPropagation(); 
-      onClick();
+      e.stopPropagation();
+      onClick(e);
     }}
     className="group relative p-2 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer"
   >
