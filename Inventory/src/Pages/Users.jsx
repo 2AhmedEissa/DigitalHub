@@ -5,7 +5,7 @@ import UserDetails from "../components/Users/UserDetails";
 import { Users as UsersIcon, AlertCircle, Sparkles } from "lucide-react";
 import AddButton from "../components/Shared/AddButton";
 import UserModal from "../components/Users/UserModal";
-import Skeleton from "../components/Shared/skeleton";
+import  Skeleton  from "../components/Shared/Skeletons";
 
 const Users = () => {
   const {
