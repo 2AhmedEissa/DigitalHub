@@ -21,7 +21,7 @@ const UserDetails = memo(({ user, onClose }) => {
         {onClose && (
           <button
             onClick={onClose}
-            className="p-2 hover:bg-gray-50 rounded-xl transition-colors text-gray-400 hover:text-gray-600"
+            className="hidden lg:block pr-2 hover:bg-gray-50 rounded-xl transition-colors text-gray-400 hover:text-gray-600"
             aria-label="Close details"
           >
             <X className="h-5 w-5" />

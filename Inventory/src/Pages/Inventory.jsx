@@ -337,7 +337,7 @@ export default function ProductTable() {
                   >
                     <td className="px-6 py-4">
                       <div className="flex items-center">
-                        <div className="h-10 w-10 flex-shrink-0 bg-gradient-to-br from-indigo-100 to-purple-100 rounded-lg flex items-center justify-center text-indigo-600 font-bold text-lg shadow-sm">
+                        <div className="h-10 w-10 shrink-0 bg-linear-to-br from-indigo-100 to-purple-100 rounded-lg flex items-center justify-center text-indigo-600 font-bold text-lg shadow-sm">
                           {product.name[0]}
                         </div>
                         <div className="ml-4">

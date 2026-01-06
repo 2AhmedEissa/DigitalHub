@@ -1,8 +1,11 @@
 import { useUsers } from "../hooks/useUsers";
 import UserSearch from "../components/Users/UserSearch";
-import { UserList, UserSkeleton } from "../components/Users/UserList";
+import { UserList } from "../components/Users/UserList";
 import UserDetails from "../components/Users/UserDetails";
-import { Users as UsersIcon, AlertCircle, Sparkles } from "lucide-react";
+import { Skeleton } from "../components/Shared/skeleton";
+import { Users as UsersIcon, AlertCircle, Sparkles, Plus } from "lucide-react";
+import AddButton from "../components/Shared/AddButton";
+import UserModal from "../components/Users/UserModal";
 
 const Users = () => {
   const {
@@ -11,9 +14,16 @@ const Users = () => {
     loading,
     error,
     selectedUser,
+    isModalOpen,
+    editingUser,
     handleSearchChange,
     handleSelectUser,
     handleClearSelection,
+    handleAddClick,
+    handleEditClick,
+    handleSaveUser,
+    handleCloseModal,
+    handleDeleteUser,
   } = useUsers();
 
   return (
@@ -31,7 +41,9 @@ const Users = () => {
             </div>
           </div>
 
-          <UserSearch value={search} onChange={handleSearchChange} />
+          <div className="flex items-center gap-4">
+            <UserSearch value={search} onChange={handleSearchChange} />
+          </div>
         </div>
       </header>
 
@@ -40,8 +52,9 @@ const Users = () => {
         <section className="lg:col-span-2 space-y-4">
           <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl shadow-indigo-100 border border-white/40 p-6 overflow-hidden">
             <div className="flex items-center justify-between mb-8">
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-8">
                 <h3 className="font-bold text-gray-900">Users</h3>
+                <AddButton onClick={handleAddClick} />
                 {search && (
                   <span className="text-[10px] font-bold text-indigo-500 bg-indigo-50 px-2 py-0.5 rounded uppercase tracking-wider">
                     Filtering
@@ -56,7 +69,7 @@ const Users = () => {
             </div>
 
             {loading ? (
-              <UserSkeleton />
+              <Skeleton />
             ) : error ? (
               <div className="flex flex-col items-center justify-center py-20 text-rose-500 bg-rose-50/50 rounded-3xl border border-dashed border-rose-100">
                 <AlertCircle className="h-10 w-10 mb-2" />
@@ -68,9 +81,13 @@ const Users = () => {
                 onSelect={handleSelectUser}
                 selectedUser={selectedUser}
                 onCloseDetails={handleClearSelection}
+                onEdit={handleEditClick}
+                onDelete={handleDeleteUser}
               />
             )}
           </div>
+
+          <AddButton />
         </section>
 
         <aside className="hidden lg:block lg:col-span-1">
@@ -95,6 +112,13 @@ const Users = () => {
           </div>
         </aside>
       </div>
+
+      <UserModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        userToEdit={editingUser}
+        onSave={handleSaveUser}
+      />
     </main>
   );
 };
