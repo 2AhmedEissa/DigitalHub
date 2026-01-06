@@ -5,10 +5,10 @@ export const ConfirmPopover = ({
   anchorEl,
   onClose,
   onConfirm,
-  title = "Are you sure?",
-  description = "This action cannot be undone.",
-  confirmLabel = "Confirm",
-  cancelLabel = "Cancel",
+  title,
+  description,
+  confirmLabel,
+  cancelLabel,
 }) => {
   const open = Boolean(anchorEl);
   const id = open ? "confirm-popover" : undefined;

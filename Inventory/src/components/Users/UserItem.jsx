@@ -83,6 +83,7 @@ export const UserItem = memo(
                 title={`${user.name}`}
                 description="This action cannot be undone. Are you sure?"
                 confirmLabel="Delete"
+                cancelLabel="Cancel"
               />
             </div>
             <ChevronRight
