@@ -64,8 +64,6 @@ export const ConfirmPopover = ({
           {confirmLabel}
         </button>
       </div>
-
-      <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-px w-3 h-3 rotate-45 bg-white/80 backdrop-blur-2xl border-r border-b border-white/50 ring-1 ring-rose-100/50 clip-arrow"></div>
     </Popover>
   );
 };
