@@ -2,14 +2,24 @@ import { useUsers } from "../hooks/useUsers";
 import UserSearch from "../components/Users/UserSearch";
 import { UserList } from "../components/Users/UserList";
 import UserDetails from "../components/Users/UserDetails";
-import { Users as UsersIcon, AlertCircle, Sparkles } from "lucide-react";
+import {
+  Users as UsersIcon,
+  AlertCircle,
+  Sparkles,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
 import AddButton from "../components/Shared/AddButton";
 import UserModal from "../components/Users/UserModal";
-import  Skeleton  from "../components/Shared/Skeletons";
+import Skeleton from "../components/Shared/Skeletons";
 
 const Users = () => {
   const {
     users,
+    totalUsers,
+    currentPage,
+    totalPages,
+    setCurrentPage,
     search,
     loading,
     error,
@@ -50,40 +60,76 @@ const Users = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 pb-12">
         {/* List */}
         <section className="lg:col-span-2 space-y-4">
-          <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl shadow-indigo-100 border border-white/40 p-6 overflow-hidden">
-            <div className="flex items-center justify-between mb-8">
-              <div className="flex items-center gap-8">
-                <h3 className="font-bold text-gray-900">Users</h3>
-                <AddButton onClick={handleAddClick} />
-                {search && (
-                  <span className="text-[10px] font-bold text-indigo-500 bg-indigo-50 px-2 py-0.5 rounded uppercase tracking-wider">
-                    Filtering
+          <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl shadow-indigo-100 border border-white/40 overflow-hidden">
+            <div className="p-6 pb-0">
+              <div className="flex items-center justify-between mb-8">
+                <div className="flex items-center gap-8">
+                  <h3 className="font-bold text-gray-900">Users</h3>
+                  <AddButton onClick={handleAddClick} />
+                  {search && (
+                    <span className="text-[10px] font-bold text-indigo-500 bg-indigo-50 px-2 py-0.5 rounded uppercase tracking-wider">
+                      Filtering
+                    </span>
+                  )}
+                </div>
+                {!loading && (
+                  <span className="text-sm font-semibold text-indigo-600 bg-indigo-50/50 px-4 py-1.5 rounded-full border border-indigo-100/50">
+                    {totalUsers} {totalUsers === 1 ? "User" : "Users"}
                   </span>
                 )}
               </div>
-              {!loading && (
-                <span className="text-sm font-semibold text-indigo-600 bg-indigo-50/50 px-4 py-1.5 rounded-full border border-indigo-100/50">
-                  {users.length} {users.length === 1 ? "User" : "Users"}
-                </span>
+            </div>
+
+            <div className="p-6 pt-0">
+              {loading ? (
+                <Skeleton />
+              ) : error ? (
+                <div className="flex flex-col items-center justify-center py-20 text-rose-500 bg-rose-50/50 rounded-3xl border border-dashed border-rose-100">
+                  <AlertCircle className="h-10 w-10 mb-2" />
+                  <p className="font-bold">{error}</p>
+                </div>
+              ) : (
+                <UserList
+                  users={users}
+                  onSelect={handleSelectUser}
+                  selectedUser={selectedUser}
+                  onCloseDetails={handleClearSelection}
+                  onEdit={handleEditClick}
+                  onDelete={handleDeleteUser}
+                />
               )}
             </div>
 
-            {loading ? (
-              <Skeleton />
-            ) : error ? (
-              <div className="flex flex-col items-center justify-center py-20 text-rose-500 bg-rose-50/50 rounded-3xl border border-dashed border-rose-100">
-                <AlertCircle className="h-10 w-10 mb-2" />
-                <p className="font-bold">{error}</p>
-              </div>
-            ) : (
-              <UserList
-                users={users}
-                onSelect={handleSelectUser}
-                selectedUser={selectedUser}
-                onCloseDetails={handleClearSelection}
-                onEdit={handleEditClick}
-                onDelete={handleDeleteUser}
-              />
+            {!loading && !error && (
+              <footer className="bg-gray-50/50 px-6 py-4 border-t border-gray-100 flex items-center justify-between">
+                <div className="text-sm text-gray-500">
+                  Page{" "}
+                  <span className="font-semibold text-indigo-600">
+                    {currentPage}
+                  </span>{" "}
+                  of <span className="font-semibold">{totalPages || 1}</span>
+                </div>
+                <nav className="flex gap-2" aria-label="Pagination">
+                  <button
+                    onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                    disabled={currentPage === 1}
+                    aria-label="Previous page"
+                    className="p-2 rounded-lg border border-gray-200 bg-white text-gray-600 enabled:hover:bg-gray-50 enabled:active:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer"
+                  >
+                    <ChevronLeft className="w-4 h-4" />
+                  </button>
+                  <button
+                    onClick={() =>
+                      setCurrentPage((p) => Math.min(totalPages, p + 1))
+                    }
+                    disabled={currentPage === totalPages || totalPages === 0}
+                    aria-label="Next page"
+                    className="p-2 rounded-lg border border-gray-200 bg-white text-gray-600 enabled:hover:bg-gray-50 enabled:active:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer"
+                  >
+                    <ChevronRight className="w-4 h-4" />
+                  </button>
+                </nav>
+              </footer>
             )}
           </div>
 

@@ -11,6 +11,9 @@ export const useUsers = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingUser, setEditingUser] = useState("");
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
+
   useEffect(() => {
     const getUsers = async () => {
       setLoading(true);
@@ -35,8 +38,15 @@ export const useUsers = () => {
     );
   }, [users, search]);
 
+  const totalPages = Math.ceil(filteredUsers.length / itemsPerPage);
+  const paginatedUsers = useMemo(() => {
+    const start = (currentPage - 1) * itemsPerPage;
+    return filteredUsers.slice(start, start + itemsPerPage);
+  }, [filteredUsers, currentPage]);
+
   const handleSearchChange = useCallback((value) => {
     setSearch(value);
+    setCurrentPage(1);
   }, []);
 
   const handleSelectUser = useCallback((user) => {
@@ -90,7 +100,11 @@ export const useUsers = () => {
   }, []);
 
   return {
-    users: filteredUsers,
+    users: paginatedUsers,
+    totalUsers: filteredUsers.length,
+    currentPage,
+    totalPages,
+    setCurrentPage,
     search,
     loading,
     error,

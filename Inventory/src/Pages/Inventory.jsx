@@ -16,6 +16,7 @@ import {
   XCircle,
   RotateCcw,
 } from "lucide-react";
+import { ConfirmPopover } from "../components/Shared/ConfirmPopover";
 
 export default function ProductTable() {
   const [data, setData] = useState(products);
@@ -25,6 +26,8 @@ export default function ProductTable() {
   const [selectedPriceRange, setSelectedPriceRange] = useState("All");
   const [offerFilter, setOfferFilter] = useState("All");
   const [currentPage, setCurrentPage] = useState(1);
+  const [deleteAnchor, setDeleteAnchor] = useState(null);
+  const [deleteId, setDeleteId] = useState(null);
   const itemsPerPage = 10;
 
   const debouncedSetSearch = useRef(
@@ -103,54 +106,15 @@ export default function ProductTable() {
 
   // Delete handler
   const handleDelete = (id) => {
-    toast(
-      (t) => (
-        <div className="flex flex-col gap-3">
-          <p className="font-medium text-gray-900">
-            Are you sure you want to delete this product?
-          </p>
-          <div className="flex justify-end gap-2">
-            <button
-              onClick={() => toast.dismiss(t.id)}
-              className="px-3 py-1.5 text-xs font-semibold text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
-            >
-              Cancel
-            </button>
-            <button
-              onClick={() => {
-                setData((prev) => prev.filter((p) => p.id !== id));
-                toast.dismiss(t.id);
-                toast.success("Product deleted successfully!", {
-                  icon: "🗑️",
-                  style: {
-                    borderRadius: "12px",
-                    background: "#333",
-                    color: "#fff",
-                  },
-                });
-              }}
-              className="px-3 py-1.5 text-xs font-semibold text-white bg-rose-500 hover:bg-rose-600 rounded-lg transition-colors shadow-sm"
-            >
-              Delete
-            </button>
-          </div>
-        </div>
-      ),
-      {
-        duration: 5000,
-        position: "top-center",
-        style: {
-          padding: "16px",
-          color: "#1e293b",
-          background: "#fff",
-          borderRadius: "20px",
-          boxShadow:
-            "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
-          border: "1px border-gray-100",
-          minWidth: "300px",
-        },
-      }
-    );
+    setData((prev) => prev.filter((p) => p.id !== id));
+    toast.success("Product deleted successfully!", {
+      icon: "🗑️",
+      style: {
+        borderRadius: "12px",
+        background: "red",
+        color: "#fff",
+      },
+    });
   };
 
   // Edit handler
@@ -172,7 +136,7 @@ export default function ProductTable() {
       <header className="bg-white/70 backdrop-blur-xl border border-white/20 rounded-3xl p-6 mb-8 shadow-xl shadow-indigo-500/5">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-6">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-violet-600">
+            <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-linear-to-r from-indigo-600 to-violet-600 tracking-tight">
               Product Inventory
             </h1>
             <p className="text-gray-500 mt-1">
@@ -393,7 +357,10 @@ export default function ProductTable() {
                           <Edit className="w-4 h-4" />
                         </button>
                         <button
-                          onClick={() => handleDelete(product.id)}
+                          onClick={(e) => {
+                            setDeleteAnchor(e.currentTarget);
+                            setDeleteId(product.id);
+                          }}
                           aria-label={`Delete ${product.name}`}
                           className="p-2 bg-white border border-gray-200 rounded-lg hover:border-rose-300 hover:text-rose-600 hover:bg-rose-50 transition-all shadow-sm"
                         >
@@ -430,7 +397,7 @@ export default function ProductTable() {
               <article key={product.id} className="p-4 space-y-4">
                 <div className="flex items-start justify-between">
                   <div className="flex items-center">
-                    <div className="h-10 w-10 bg-gradient-to-br from-indigo-100 to-purple-100 rounded-lg flex items-center justify-center text-indigo-600 font-bold text-lg">
+                    <div className="h-10 w-10 bg-linear-to-br from-indigo-100 to-purple-100 rounded-lg flex items-center justify-center text-indigo-600 font-bold text-lg">
                       {product.name[0]}
                     </div>
                     <div className="ml-3">
@@ -451,7 +418,10 @@ export default function ProductTable() {
                       <Edit className="w-4 h-4" />
                     </button>
                     <button
-                      onClick={() => handleDelete(product.id)}
+                      onClick={(e) => {
+                        setDeleteAnchor(e.currentTarget);
+                        setDeleteId(product.id);
+                      }}
                       aria-label={`Delete ${product.name}`}
                       className="p-2 bg-white border border-gray-200 rounded-lg text-gray-400 hover:text-rose-600"
                     >
@@ -530,7 +500,7 @@ export default function ProductTable() {
               onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
               disabled={currentPage === 1}
               aria-label="Previous page"
-              className="p-2 rounded-lg border border-gray-200 bg-white text-gray-600 enabled:hover:bg-gray-50 enabled:active:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+              className="cursor-pointer p-2 rounded-lg border border-gray-200 bg-white text-gray-600 enabled:hover:bg-gray-50 enabled:active:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
             >
               <ChevronLeft className="w-4 h-4" />
             </button>
@@ -538,13 +508,30 @@ export default function ProductTable() {
               onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
               disabled={currentPage === totalPages || totalPages === 0}
               aria-label="Next page"
-              className="p-2 rounded-lg border border-gray-200 bg-white text-gray-600 enabled:hover:bg-gray-50 enabled:active:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+              className="cursor-pointer p-2 rounded-lg border border-gray-200 bg-white text-gray-600 enabled:hover:bg-gray-50 enabled:active:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
             >
               <ChevronRight className="w-4 h-4" />
             </button>
           </nav>
         </footer>
       </div>
+
+      <ConfirmPopover
+        anchorEl={deleteAnchor}
+        onClose={() => {
+          setDeleteAnchor(null);
+          setDeleteId(null);
+        }}
+        onConfirm={() => {
+          if (deleteId) handleDelete(deleteId);
+          setDeleteAnchor(null);
+          setDeleteId(null);
+        }}
+        title="Delete Product?"
+        description="Are you sure you want to delete this product? This action cannot be undone."
+        confirmLabel="Delete"
+        cancelLabel="Cancel"
+      />
     </main>
   );
 }
