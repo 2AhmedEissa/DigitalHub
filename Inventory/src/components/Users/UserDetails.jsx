@@ -1,7 +1,7 @@
 import { memo } from "react";
-import { Mail, Phone, Globe, X, User } from "lucide-react";
+import { Mail, Phone, Globe, X, User, Edit, Trash2 } from "lucide-react";
 
-const UserDetails = memo(({ user, onClose }) => {
+const UserDetails = memo(({ user, onClose, onEdit, onDelete }) => {
   if (!user) return null;
 
   return (
@@ -29,7 +29,6 @@ const UserDetails = memo(({ user, onClose }) => {
         )}
       </header>
 
-      {/* Info */}
       <section className="p-4 lg:p-6 space-y-5">
         <div className="grid gap-4">
           <InfoRow icon={<Mail />} label="Email" value={user.email} />
@@ -37,6 +36,29 @@ const UserDetails = memo(({ user, onClose }) => {
           <InfoRow icon={<Globe />} label="Website" value={user.website} />
           <InfoRow icon={<User />} label="Username" value={user.username} />
         </div>
+
+        {(onEdit || onDelete) && (
+          <div className="flex items-center gap-3 pt-4 mt-4 border-t border-gray-100 lg:hidden">
+            {onEdit && (
+              <button
+                onClick={() => onEdit(user)}
+                className="flex-1 flex items-center justify-center gap-2 p-2.5 rounded-xl bg-indigo-50 text-indigo-600 font-semibold text-sm hover:bg-indigo-100 transition-colors"
+              >
+                <Edit className="h-4 w-4" />
+                Edit
+              </button>
+            )}
+            {onDelete && (
+              <button
+                onClick={() => onDelete(user)}
+                className="flex-1 flex items-center justify-center gap-2 p-2.5 rounded-xl bg-rose-50 text-rose-600 font-semibold text-sm hover:bg-rose-100 transition-colors"
+              >
+                <Trash2 className="h-4 w-4" />
+                Delete
+              </button>
+            )}
+          </div>
+        )}
       </section>
     </article>
   );

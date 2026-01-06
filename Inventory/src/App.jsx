@@ -9,19 +9,19 @@ export default function App() {
   return (
     <Router>
       <div className="flex flex-col min-h-screen bg-gray-50/50">
-        <Toaster 
-          position="top-center" 
-          reverseOrder={false} 
+        <Toaster
+          position="top-center"
+          reverseOrder={false}
           toastOptions={{
             style: {
-              borderRadius: '16px',
-              background: '#333',
-              color: '#fff',
+              borderRadius: "16px",
+              background: "#333",
+              color: "#fff",
             },
           }}
         />
         <Navbar />
-        <main className="flex-grow p-4 md:p-8">
+        <main className="grow p-4 md:p-8">
           <Routes>
             <Route path="/" element={<Inventory />} />
             <Route path="/users" element={<Users />} />

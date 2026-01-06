@@ -2,7 +2,7 @@ import { useUsers } from "../hooks/useUsers";
 import UserSearch from "../components/Users/UserSearch";
 import { UserList } from "../components/Users/UserList";
 import UserDetails from "../components/Users/UserDetails";
-import { Skeleton } from "../components/Shared/skeleton";
+import { Skeleton } from "../components/Shared/Skeleton";
 import { Users as UsersIcon, AlertCircle, Sparkles, Plus } from "lucide-react";
 import AddButton from "../components/Shared/AddButton";
 import UserModal from "../components/Users/UserModal";
@@ -93,7 +93,12 @@ const Users = () => {
         <aside className="hidden lg:block lg:col-span-1">
           <div className="sticky top-24">
             {selectedUser ? (
-              <UserDetails user={selectedUser} onClose={handleClearSelection} />
+              <UserDetails
+                user={selectedUser}
+                onClose={handleClearSelection}
+                onEdit={handleEditClick}
+                onDelete={handleDeleteUser}
+              />
             ) : (
               <div className="bg-white/40 backdrop-blur-sm border-2 border-dashed border-indigo-100/50 rounded-[2.5rem] p-12 text-center shadow-inner group">
                 <div className="h-24 w-24 bg-white rounded-4xl flex items-center justify-center mx-auto mb-6 shadow-xl shadow-indigo-500/10 group-hover:scale-110 transition-transform duration-500">
