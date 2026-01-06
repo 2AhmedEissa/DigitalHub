@@ -44,6 +44,12 @@ export const useUsers = () => {
     return filteredUsers.slice(start, start + itemsPerPage);
   }, [filteredUsers, currentPage]);
 
+  useEffect(() => {
+    if (currentPage > totalPages) {
+      setCurrentPage(Math.max(1, totalPages));
+    }
+  }, [currentPage, totalPages]);
+
   const handleSearchChange = useCallback((value) => {
     setSearch(value);
     setCurrentPage(1);

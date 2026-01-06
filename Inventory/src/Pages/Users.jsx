@@ -133,7 +133,7 @@ const Users = () => {
             )}
           </div>
 
-          <AddButton />
+          <AddButton onClick={handleAddClick} />
         </section>
 
         <aside className="hidden lg:block lg:col-span-1">
