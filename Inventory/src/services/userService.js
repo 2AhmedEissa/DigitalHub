@@ -1,8 +1,8 @@
 import axios from "axios";
 
-const API_URL = "https://jsonplaceholder.typicode.com/users";
+const apiUrl = import.meta.env.VITE_APP_API;
 
 export const fetchUsers = async () => {
-  const response = await axios.get(API_URL);
+  const response = await axios.get(apiUrl);
   return response.data;
 };
