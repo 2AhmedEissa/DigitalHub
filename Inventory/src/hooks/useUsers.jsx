@@ -9,7 +9,7 @@ export const useUsers = () => {
   const [error, setError] = useState(null);
   const [selectedUser, setSelectedUser] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingUser, setEditingUser] = useState("");
+  const [editingUser, setEditingUser] = useState(null);
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
@@ -93,8 +93,9 @@ export const useUsers = () => {
     [editingUser]
   );
 
-  const handleDeleteUser = useCallback((user) => {
-    setUsers((prev) => prev.filter((u) => u.id !== user.id));
+  const handleDeleteUser = useCallback((userId) => {
+    setUsers((prev) => prev.filter((u) => u.id !== userId));
+    setSelectedUser(null);
     toast.success("User deleted successfully", {
       icon: "🗑️",
       style: {
@@ -104,6 +105,22 @@ export const useUsers = () => {
       },
     });
   }, []);
+
+  const handleClearAll = useCallback(() => {
+    setUsers([]);
+    setSelectedUser(null);
+    setEditingUser(null);
+    toast.success("All users cleared successfully", {
+      icon: "🧹",
+      style: {
+        borderRadius: "10px",
+        background: "red",
+        color: "#fff",
+      },
+    });
+  }, []);
+
+  
 
   return {
     users: paginatedUsers,
@@ -125,5 +142,6 @@ export const useUsers = () => {
     handleCloseModal,
     handleSaveUser,
     handleDeleteUser,
+    handleClearAll,
   };
 };

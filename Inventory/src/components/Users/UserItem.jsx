@@ -77,7 +77,7 @@ export const UserItem = memo(
                 anchorEl={anchorEl}
                 onClose={() => setAnchorEl(null)}
                 onConfirm={() => {
-                  onDelete(user);
+                  onDelete(user.id);
                   setAnchorEl(null);
                 }}
                 title={`${user.name}`}

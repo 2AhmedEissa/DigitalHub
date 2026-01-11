@@ -19,6 +19,7 @@ export const ConfirmPopover = ({
       open={open}
       anchorEl={anchorEl}
       onClose={onClose}
+      onClick={(e) => e.stopPropagation()}
       anchorOrigin={{
         vertical: "top",
         horizontal: "center",

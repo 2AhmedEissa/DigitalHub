@@ -8,12 +8,17 @@ import {
   Sparkles,
   ChevronLeft,
   ChevronRight,
+  Trash2,
 } from "lucide-react";
 import AddButton from "../components/Shared/AddButton";
 import UserModal from "../components/Users/UserModal";
 import Skeleton from "../components/Shared/Skeletons";
+import { ConfirmPopover } from "../components/Shared/ConfirmPopover";
+import { useState } from "react";
 
 const Users = () => {
+  const [clearAllAnchor, setClearAllAnchor] = useState(null);
+
   const {
     users,
     totalUsers,
@@ -34,6 +39,7 @@ const Users = () => {
     handleSaveUser,
     handleCloseModal,
     handleDeleteUser,
+    handleClearAll,
   } = useUsers();
 
   return (
@@ -73,9 +79,20 @@ const Users = () => {
                   )}
                 </div>
                 {!loading && (
-                  <span className="text-sm font-semibold text-indigo-600 bg-indigo-50/50 px-4 py-1.5 rounded-full border border-indigo-100/50">
-                    {totalUsers} {totalUsers === 1 ? "User" : "Users"}
-                  </span>
+                  <div className="flex items-center gap-3">
+                    {totalUsers > 0 && (
+                      <button
+                        onClick={(e) => setClearAllAnchor(e.currentTarget)}
+                        className="flex items-center gap-2 px-3 py-1.5 text-xs font-semibold text-rose-600 bg-rose-50 hover:bg-rose-100 rounded-full border border-rose-200 transition-all cursor-pointer"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                        Clear All
+                      </button>
+                    )}
+                    <span className="text-sm font-semibold text-indigo-600 bg-indigo-50/50 px-4 py-1.5 rounded-full border border-indigo-100/50">
+                      {totalUsers} {totalUsers === 1 ? "User" : "Users"}
+                    </span>
+                  </div>
                 )}
               </div>
             </div>
@@ -100,7 +117,7 @@ const Users = () => {
               )}
             </div>
 
-            {!loading && !error && (
+            {!loading && !error && totalUsers > 0 && (
               <footer className="bg-gray-50/50 px-6 py-4 border-t border-gray-100 flex items-center justify-between">
                 <div className="text-sm text-gray-500">
                   Page{" "}
@@ -132,8 +149,6 @@ const Users = () => {
               </footer>
             )}
           </div>
-
-          <AddButton onClick={handleAddClick} />
         </section>
 
         <aside className="hidden lg:block lg:col-span-1">
@@ -169,6 +184,19 @@ const Users = () => {
         onClose={handleCloseModal}
         userToEdit={editingUser}
         onSave={handleSaveUser}
+      />
+
+      <ConfirmPopover
+        anchorEl={clearAllAnchor}
+        onClose={() => setClearAllAnchor(null)}
+        onConfirm={() => {
+          handleClearAll();
+          setClearAllAnchor(null);
+        }}
+        title="Clear All Users?"
+        description="This will delete ALL users from the list. This action cannot be undone."
+        confirmLabel="Clear All"
+        cancelLabel="Cancel"
       />
     </main>
   );

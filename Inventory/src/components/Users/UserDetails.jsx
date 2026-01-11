@@ -64,7 +64,7 @@ const UserDetails = memo(({ user, onClose, onEdit, onDelete }) => {
                   anchorEl={anchorEl}
                   onClose={() => setAnchorEl(null)}
                   onConfirm={() => {
-                    onDelete(user);
+                    onDelete(user.id);
                     setAnchorEl(null);
                   }}
                   title="Delete User?"
@@ -80,7 +80,7 @@ const UserDetails = memo(({ user, onClose, onEdit, onDelete }) => {
   );
 });
 
-const InfoRow = ({ icon, label, value, href }) => (
+const InfoRow = ({ icon, label, value }) => (
   <div className="flex items-start gap-4 group">
     <div className="mt-0.5 text-indigo-400 group-hover:text-indigo-600 transition-colors [&>svg]:h-4 [&>svg]:w-4">
       {icon}
@@ -89,18 +89,7 @@ const InfoRow = ({ icon, label, value, href }) => (
       <p className="text-[10px] uppercase font-bold text-gray-400 tracking-wider mb-0.5">
         {label}
       </p>
-      {href ? (
-        <a
-          href={href}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-sm font-medium text-gray-900 hover:text-indigo-600 transition-colors truncate block"
-        >
-          {value}
-        </a>
-      ) : (
-        <p className="text-sm font-medium text-gray-900 truncate">{value}</p>
-      )}
+      <p className="text-sm font-medium text-gray-900 truncate">{value}</p>
     </div>
   </div>
 );
