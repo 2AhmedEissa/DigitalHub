@@ -19,8 +19,14 @@ export const useUsers = () => {
       setLoading(true);
       setError(null);
       try {
-        const data = await fetchUsers();
-        setUsers(data);
+        const cachedUsers = localStorage.getItem("users");
+        if (cachedUsers) {
+          setUsers(JSON.parse(cachedUsers));
+        } else {
+          const data = await fetchUsers();
+          setUsers(data);
+          localStorage.setItem("users", JSON.stringify(data));
+        }
       } catch (err) {
         console.error("Error fetching users:", err);
         setError("Failed to fetch users. Please try again later.");
@@ -80,13 +86,18 @@ export const useUsers = () => {
 
   const handleSaveUser = useCallback(
     (userData) => {
-      if (editingUser) {
-        setUsers((prev) =>
-          prev.map((u) => (u.id === editingUser.id ? { ...u, ...userData } : u))
-        );
-      } else {
-        setUsers((prev) => [{ id: Date.now(), ...userData }, ...prev]);
-      }
+      setUsers((prev) => {
+        let newUsers;
+        if (editingUser) {
+          newUsers = prev.map((u) =>
+            u.id === editingUser.id ? { ...u, ...userData } : u
+          );
+        } else {
+          newUsers = [{ id: Date.now(), ...userData }, ...prev];
+        }
+        localStorage.setItem("users", JSON.stringify(newUsers));
+        return newUsers;
+      });
       setIsModalOpen(false);
       setEditingUser(null);
     },
@@ -94,7 +105,11 @@ export const useUsers = () => {
   );
 
   const handleDeleteUser = useCallback((userId) => {
-    setUsers((prev) => prev.filter((u) => u.id !== userId));
+    setUsers((prev) => {
+      const newUsers = prev.filter((u) => u.id !== userId);
+      localStorage.setItem("users", JSON.stringify(newUsers));
+      return newUsers;
+    });
     setSelectedUser(null);
     toast.success("User deleted successfully", {
       icon: "🗑️",
@@ -108,6 +123,7 @@ export const useUsers = () => {
 
   const handleClearAll = useCallback(() => {
     setUsers([]);
+    localStorage.removeItem("users");
     setSelectedUser(null);
     setEditingUser(null);
     toast.success("All users cleared successfully", {
@@ -119,8 +135,6 @@ export const useUsers = () => {
       },
     });
   }, []);
-
-  
 
   return {
     users: paginatedUsers,

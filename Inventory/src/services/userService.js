@@ -3,6 +3,11 @@ import axios from "axios";
 const apiUrl = import.meta.env.VITE_APP_API;
 
 export const fetchUsers = async () => {
-  const response = await axios.get(apiUrl);
-  return response.data;
+  try {
+    const { data } = await axios.get(apiUrl);
+    return data;
+  } catch (error) {
+    console.error("Failed to fetch users:", error);
+    throw error; 
+  }
 };
