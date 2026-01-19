@@ -1,16 +1,13 @@
 import axios from "axios";
-import useSWR from "swr";
 
-const apiUrl = import.meta.env.VITE_API;
+const apiUrl = import.meta.env.VITE_APP_API;
 
-const fetcher = (url) => axios.get(url).then((res) => res.data);
-
-export function useUsersSWR() {
-  const { data, error, isLoading } = useSWR(apiUrl, fetcher);
-
-  return {
-    users: data ?? [],
-    isLoading,
-    isError: !!error,
-  };
-}
+export const fetchUsers = async () => {
+  try {
+    const { data } = await axios.get(apiUrl);
+    return data;
+  } catch (error) {
+    console.error("Failed to fetch users:", error);
+    throw error; 
+  }
+};

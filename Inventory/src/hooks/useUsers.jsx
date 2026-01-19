@@ -1,26 +1,12 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
-import { useUsersSWR } from "../services/userService";
+import { fetchUsers } from "../services/userService";
 import toast from "react-hot-toast";
 
 export const useUsers = () => {
-  const {
-    users: apiUsers,
-    isLoading: isApiLoading,
-    isError: isApiError,
-  } = useUsersSWR();
-
-  const [users, setUsers] = useState(() => {
-    try {
-      const cached = localStorage.getItem("users");
-      const parsed = cached ? JSON.parse(cached) : [];
-      return Array.isArray(parsed) ? parsed : [];
-    } catch (error) {
-      console.error("Failed to parse users from local storage", error);
-      return [];
-    }
-  });
-
+  const [users, setUsers] = useState([]);
   const [search, setSearch] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
   const [selectedUser, setSelectedUser] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingUser, setEditingUser] = useState(null);
@@ -29,29 +15,32 @@ export const useUsers = () => {
   const itemsPerPage = 5;
 
   useEffect(() => {
-    const hasLocalData = !!localStorage.getItem("users");
-    if (!hasLocalData && apiUsers && apiUsers.length > 0) {
-      setUsers(apiUsers);
-      localStorage.setItem("users", JSON.stringify(apiUsers));
-    }
-  }, [apiUsers]);
+    const getUsers = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const cachedUsers = localStorage.getItem("users");
+        if (cachedUsers) {
+          setUsers(JSON.parse(cachedUsers));
+        } else {
+          const data = await fetchUsers();
+          setUsers(data);
+          localStorage.setItem("users", JSON.stringify(data));
+        }
+      } catch (err) {
+        console.error("Error fetching users:", err);
+        setError("Failed to fetch users. Please try again later.");
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const updateUsers = useCallback((newUsers) => {
-    setUsers(newUsers);
-    localStorage.setItem("users", JSON.stringify(newUsers));
+    getUsers();
   }, []);
 
-  const loading =
-    isApiLoading && users.length === 0 && !localStorage.getItem("users");
-  const error = isApiError
-    ? "Failed to fetch users. Please try again later."
-    : null;
-
   const filteredUsers = useMemo(() => {
-    // Ensure users is an array before filtering
-    const safeUsers = Array.isArray(users) ? users : [];
-    return safeUsers.filter((user) =>
-      user.name.toLowerCase().includes(search.toLowerCase()),
+    return users.filter((user) =>
+      user.name.toLowerCase().includes(search.toLowerCase())
     );
   }, [users, search]);
 
@@ -88,8 +77,6 @@ export const useUsers = () => {
   const handleEditClick = useCallback((user) => {
     setEditingUser(user);
     setIsModalOpen(true);
-    
-    setSelectedUser(null);
   }, []);
 
   const handleCloseModal = useCallback(() => {
@@ -103,7 +90,7 @@ export const useUsers = () => {
         let newUsers;
         if (editingUser) {
           newUsers = prev.map((u) =>
-            u.id === editingUser.id ? { ...u, ...userData } : u,
+            u.id === editingUser.id ? { ...u, ...userData } : u
           );
         } else {
           newUsers = [{ id: Date.now(), ...userData }, ...prev];
@@ -114,7 +101,7 @@ export const useUsers = () => {
       setIsModalOpen(false);
       setEditingUser(null);
     },
-    [editingUser],
+    [editingUser]
   );
 
   const handleDeleteUser = useCallback((userId) => {
@@ -135,7 +122,8 @@ export const useUsers = () => {
   }, []);
 
   const handleClearAll = useCallback(() => {
-    updateUsers([]);
+    setUsers([]);
+    localStorage.removeItem("users");
     setSelectedUser(null);
     setEditingUser(null);
     toast.success("All users cleared successfully", {
@@ -146,7 +134,7 @@ export const useUsers = () => {
         color: "#fff",
       },
     });
-  }, [updateUsers]);
+  }, []);
 
   return {
     users: paginatedUsers,
