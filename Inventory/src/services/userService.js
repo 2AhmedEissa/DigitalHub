@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const apiUrl = import.meta.env.VITE_APP_API;
+const apiUrl = import.meta.env.VITE_API;
 
 export const fetchUsers = async () => {
   try {
