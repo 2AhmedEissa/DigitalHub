@@ -1,46 +1,35 @@
-import { useState, useEffect, useMemo, useCallback } from "react";
-import { fetchUsers } from "../services/userService";
+import { useState, useMemo, useCallback } from "react";
+import useSWR from "swr";
+import {
+  fetchUsers,
+  createUser,
+  updateUser,
+  deleteUser,
+  clearAllUsers,
+} from "../services/userService";
 import toast from "react-hot-toast";
 
 export const useUsers = () => {
-  const [users, setUsers] = useState([]);
   const [search, setSearch] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
   const [selectedUser, setSelectedUser] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingUser, setEditingUser] = useState(null);
-
   const [currentPage, setCurrentPage] = useState(1);
+
+  const {
+    data: users = [],
+    error,
+    isLoading,
+    mutate,
+  } = useSWR("/users", fetchUsers, {
+    revalidateIfStale: false,
+  });
+
   const itemsPerPage = 5;
-
-  useEffect(() => {
-    const getUsers = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const cachedUsers = localStorage.getItem("users");
-        if (cachedUsers) {
-          setUsers(JSON.parse(cachedUsers));
-        } else {
-          const data = await fetchUsers();
-          setUsers(data);
-          localStorage.setItem("users", JSON.stringify(data));
-        }
-      } catch (err) {
-        console.error("Error fetching users:", err);
-        setError("Failed to fetch users. Please try again later.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    getUsers();
-  }, []);
 
   const filteredUsers = useMemo(() => {
     return users.filter((user) =>
-      user.name.toLowerCase().includes(search.toLowerCase())
+      user.name.toLowerCase().includes(search.toLowerCase()),
     );
   }, [users, search]);
 
@@ -50,8 +39,8 @@ export const useUsers = () => {
     return filteredUsers.slice(start, start + itemsPerPage);
   }, [filteredUsers, currentPage]);
 
-  useEffect(() => {
-    if (currentPage > totalPages) {
+  useState(() => {
+    if (currentPage > totalPages && totalPages > 0) {
       setCurrentPage(Math.max(1, totalPages));
     }
   }, [currentPage, totalPages]);
@@ -85,56 +74,161 @@ export const useUsers = () => {
   }, []);
 
   const handleSaveUser = useCallback(
-    (userData) => {
-      setUsers((prev) => {
-        let newUsers;
+    async (userData) => {
+      try {
         if (editingUser) {
-          newUsers = prev.map((u) =>
-            u.id === editingUser.id ? { ...u, ...userData } : u
+          const updatedUser = { ...editingUser, ...userData };
+
+          await mutate(
+            async () => {
+              await updateUser(updatedUser);
+              const currentUsers = users || [];
+              return currentUsers.map((u) =>
+                u.id === editingUser.id ? updatedUser : u,
+              );
+            },
+            {
+              optimisticData: (currentUsers) =>
+                currentUsers
+                  ? currentUsers.map((u) =>
+                      u.id === editingUser.id ? updatedUser : u,
+                    )
+                  : [],
+              rollbackOnError: true,
+              revalidate: true,
+            },
           );
+
+          toast.success("User updated successfully", {
+            icon: "✏️",
+            style: {
+              borderRadius: "10px",
+              background: "#10b981",
+              color: "#fff",
+            },
+          });
         } else {
-          newUsers = [{ id: Date.now(), ...userData }, ...prev];
+          await mutate(
+            async () => {
+              const newUser = await createUser(userData);
+              const currentUsers = users || [];
+              return [...currentUsers, newUser];
+            },
+            {
+              optimisticData: (currentUsers) => [
+                ...(currentUsers || []),
+                { ...userData, id: Date.now() },
+              ], // Temporary ID for optimistic
+              rollbackOnError: true,
+              revalidate: true,
+            },
+          );
+
+          toast.success("User added successfully", {
+            icon: "✅",
+            style: {
+              borderRadius: "10px",
+              background: "#10b981",
+              color: "#fff",
+            },
+          });
         }
-        localStorage.setItem("users", JSON.stringify(newUsers));
-        return newUsers;
-      });
-      setIsModalOpen(false);
-      setEditingUser(null);
+        setIsModalOpen(false);
+        setEditingUser(null);
+      } catch (error) {
+        toast.error("Failed to save user", {
+          icon: "❌",
+          style: {
+            borderRadius: "10px",
+            background: "#ef4444",
+            color: "#fff",
+          },
+        });
+        console.error("Error saving user:", error);
+      }
     },
-    [editingUser]
+    [editingUser, users, mutate],
   );
 
-  const handleDeleteUser = useCallback((userId) => {
-    setUsers((prev) => {
-      const newUsers = prev.filter((u) => u.id !== userId);
-      localStorage.setItem("users", JSON.stringify(newUsers));
-      return newUsers;
-    });
-    setSelectedUser(null);
-    toast.success("User deleted successfully", {
-      icon: "🗑️",
-      style: {
-        borderRadius: "10px",
-        background: "red",
-        color: "#fff",
-      },
-    });
-  }, []);
+  const handleDeleteUser = useCallback(
+    async (userId) => {
+      try {
+        await mutate(
+          async () => {
+            await deleteUser(userId);
+            const currentUsers = users || [];
+            return currentUsers.filter((u) => u.id !== userId);
+          },
+          {
+            optimisticData: (currentUsers) =>
+              currentUsers ? currentUsers.filter((u) => u.id !== userId) : [],
+            rollbackOnError: true,
+            revalidate: true,
+          },
+        );
 
-  const handleClearAll = useCallback(() => {
-    setUsers([]);
-    localStorage.removeItem("users");
-    setSelectedUser(null);
-    setEditingUser(null);
-    toast.success("All users cleared successfully", {
-      icon: "🧹",
-      style: {
-        borderRadius: "10px",
-        background: "red",
-        color: "#fff",
-      },
-    });
-  }, []);
+        setSelectedUser(null);
+
+        toast.success("User deleted successfully", {
+          icon: "🗑️",
+          style: {
+            borderRadius: "10px",
+            background: "#ef4444",
+            color: "#fff",
+          },
+        });
+      } catch (error) {
+        toast.error("Failed to delete user", {
+          icon: "❌",
+          style: {
+            borderRadius: "10px",
+            background: "#ef4444",
+            color: "#fff",
+          },
+        });
+        console.error("Error deleting user:", error);
+      }
+    },
+    [users, mutate],
+  );
+
+  const handleClearAll = useCallback(async () => {
+    try {
+      await mutate(
+        async () => {
+          await clearAllUsers();
+          return [];
+        },
+        {
+          optimisticData: [],
+          rollbackOnError: true,
+          revalidate: true,
+        },
+      );
+
+      setSelectedUser(null);
+      setEditingUser(null);
+
+      toast.success("All users cleared successfully", {
+        icon: "🧹",
+        style: {
+          borderRadius: "10px",
+          background: "#ef4444",
+          color: "#fff",
+        },
+      });
+    } catch (error) {
+      toast.error("Failed to clear users", {
+        icon: "❌",
+        style: {
+          borderRadius: "10px",
+          background: "#ef4444",
+          color: "#fff",
+        },
+      });
+      console.error("Error clearing users:", error);
+    }
+  }, [mutate]);
 
   return {
     users: paginatedUsers,
@@ -143,8 +237,8 @@ export const useUsers = () => {
     totalPages,
     setCurrentPage,
     search,
-    loading,
-    error,
+    loading: isLoading,
+    error: error ? "Failed to fetch users. Please try again later" : null,
     selectedUser,
     isModalOpen,
     editingUser,
