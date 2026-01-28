@@ -25,8 +25,6 @@ export default function App() {
           <Routes>
             <Route path="/" element={<Inventory />} />
             <Route path="/users" element={<Users />} />
-            {/* Fallback route */}
-            <Route path="*" element={<Inventory />} />
           </Routes>
         </main>
         <Footer />

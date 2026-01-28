@@ -33,7 +33,7 @@ export default function ProductTable() {
   const debouncedSetSearch = useRef(
     debounce((value) => {
       setDebouncedSearch(value);
-    }, 300)
+    }, 300),
   ).current;
 
   const handleSearchChange = (e) => {
@@ -62,7 +62,7 @@ export default function ProductTable() {
 
   const categories = useMemo(
     () => ["All", ...new Set(data.map((p) => p.category))],
-    [data]
+    [data],
   );
 
   const filteredData = useMemo(() => {
@@ -101,7 +101,7 @@ export default function ProductTable() {
   const totalPages = Math.ceil(filteredData.length / itemsPerPage);
   const paginatedData = filteredData.slice(
     (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
+    currentPage * itemsPerPage,
   );
 
   // Delete handler
