@@ -4,7 +4,7 @@ import { login } from "../features/auth/authSlice";
 import { useNavigate } from "react-router-dom";
 
 const LoginPage = () => {
-  const [username, setUsername] = useState("admin"); // Default for easy testing
+  const [username, setUsername] = useState("admin"); 
   const [password, setPassword] = useState("password123");
   const [loading, setLoading] = useState(false);
 

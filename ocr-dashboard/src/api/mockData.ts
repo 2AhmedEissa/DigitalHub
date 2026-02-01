@@ -7,7 +7,7 @@ export interface OCRRequest {
   type: "Invoice" | "ID Card" | "Receipt";
 }
 
-export const MOCK_REPORTS: OCRRequest[] = [
+export const MockData: OCRRequest[] = [
   {
     id: "1",
     customerName: "TechCorp Solutions",
